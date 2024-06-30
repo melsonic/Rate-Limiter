@@ -32,7 +32,7 @@ func TokenBucketMiddlewareRL(next http.HandlerFunc) http.HandlerFunc {
 			bucket = BucketList[ClientIP]
       mut.Unlock()
 		}
-		fmt.Printf("%s (%t) => ", ClientIP, bucketPresent)
+		fmt.Printf("%s   ", ClientIP)
 		allowRequest := bucket.HandleNewRequest()
 		if !allowRequest {
 			w.WriteHeader(http.StatusTooManyRequests)

@@ -15,8 +15,8 @@ type TokenBucket struct {
 }
 
 func (t *TokenBucket) RefillBucket() {
-  t.mut.Lock()
-  defer t.mut.Unlock()
+	t.mut.Lock()
+	defer t.mut.Unlock()
 	now := time.Now()
 	duration := now.Sub(t.LastRefillTime)
 	tokensToAdd := int(duration.Seconds()) * t.TokenRefillRate
@@ -26,14 +26,14 @@ func (t *TokenBucket) RefillBucket() {
 
 func (t *TokenBucket) HandleNewRequest() bool {
 	t.RefillBucket()
-  t.mut.Lock()
-  t.mut.Unlock()
+	t.mut.Lock()
+	t.mut.Unlock()
 
 	if t.TokenCount == 0 {
-		fmt.Printf("count : %d & capacity : %d ... so disallow\n", t.TokenCount, t.Capacity)
+		fmt.Printf("%d   %d   ...   so disallow\n", t.TokenCount, t.Capacity)
 		return false
 	}
 	t.TokenCount = t.TokenCount - 1
-	fmt.Printf("count : %d & capacity : %d ... so allow\n", t.TokenCount+1, t.Capacity)
+	fmt.Printf("%d   %d   ...   so allow\n", t.TokenCount+1, t.Capacity)
 	return true
 }
