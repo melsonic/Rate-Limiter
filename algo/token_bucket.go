@@ -24,7 +24,7 @@ func (t *TokenBucket) RefillBucket() {
 	t.LastRefillTime = now
 }
 
-func (t *TokenBucket) HandleNewRequest() bool {
+func (t *TokenBucket) HandleIncomingRequest() bool {
 	t.RefillBucket()
 	t.mut.Lock()
 	t.mut.Unlock()

@@ -3,26 +3,22 @@ package middleware
 import (
 	"fmt"
 	"net/http"
-	"sync"
 	"time"
 
 	"github.com/melsonic/rate-limiter/algo"
 	"github.com/melsonic/rate-limiter/constants"
 )
 
-var (
-	BucketList map[string]*algo.TokenBucket = make(map[string]*algo.TokenBucket)
-	mut        sync.RWMutex
-)
+var BucketList map[string]*algo.TokenBucket = make(map[string]*algo.TokenBucket)
 
 func TokenBucketMiddlewareRL(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ClientIP := r.RemoteAddr
-		mut.RLock()
+		constants.Mut.RLock()
 		bucket, bucketPresent := BucketList[ClientIP]
-		mut.RUnlock()
+		constants.Mut.RUnlock()
 		if !bucketPresent {
-      mut.Lock()
+			constants.Mut.Lock()
 			BucketList[ClientIP] = &algo.TokenBucket{
 				Capacity:        constants.BucketCapacity,
 				TokenCount:      1,
@@ -30,10 +26,10 @@ func TokenBucketMiddlewareRL(next http.HandlerFunc) http.HandlerFunc {
 				LastRefillTime:  time.Now(),
 			}
 			bucket = BucketList[ClientIP]
-      mut.Unlock()
+			constants.Mut.Unlock()
 		}
 		fmt.Printf("%s   ", ClientIP)
-		allowRequest := bucket.HandleNewRequest()
+		allowRequest := bucket.HandleIncomingRequest()
 		if !allowRequest {
 			w.WriteHeader(http.StatusTooManyRequests)
 			fmt.Fprintf(w, "Too many requests\n")
