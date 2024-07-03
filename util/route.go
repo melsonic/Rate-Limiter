@@ -34,10 +34,12 @@ func Route(option string) *http.ServeMux {
       router.HandleFunc("/limited", middleware.TokenBucketMiddlewareRL(LimitedHandler))
     case "2":
       router.HandleFunc("/limited", middleware.FixedWindowCounterMiddlewareRL(LimitedHandler))
+      FixedWindowHelper()
+    case "3":
+      router.HandleFunc("/limited", middleware.SlidingWindowLogMiddlewareRL(LimitedHandler))
     default:
       router.HandleFunc("/limited", LimitedHandler)
 	}
 	router.HandleFunc("/unlimited", UnlimitedHandler)
-	FixedWindowHelper()
 	return router
 }

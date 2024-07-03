@@ -22,10 +22,16 @@ const (
 
 var FixedWindowCounter_EndTimeStamp time.Time
 
+// sliding window log algorithm
+const (
+	SlidingWindowLog_WindowSize      = 10
+	SlidingWindowLog_WindowThreshold = 10
+)
+
 // global values
 var (
 	ServerAddr string = fmt.Sprintf(":%d", PORT)
 	Mut        sync.RWMutex
 )
 
-var AlgorithmOptionsArray = []string{"Enter 1, 2 as per choice", "1) Token Bucket", "2) Fixed Window"}
+var AlgorithmOptionsArray = []string{"Enter 1, 2 as per choice", "1) Token Bucket", "2) Fixed Window", "3) Sliding Window Log"}
