@@ -13,14 +13,14 @@ var RequestTimeStamps map[string]*algo.SlidingWindowLog = make(map[string]*algo.
 func SlidingWindowLogMiddlewareRL(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ClientIP := r.RemoteAddr
-    constants.Mut.RLock()
+		constants.Mut.RLock()
 		entry, entryPresent := RequestTimeStamps[ClientIP]
-    constants.Mut.RUnlock()
+		constants.Mut.RUnlock()
 		if !entryPresent {
 			entry = &algo.SlidingWindowLog{}
-      constants.Mut.Lock()
+			constants.Mut.Lock()
 			RequestTimeStamps[ClientIP] = entry
-      constants.Mut.Unlock()
+			constants.Mut.Unlock()
 		}
 		fmt.Printf("%s   ", ClientIP)
 		var allowRequest bool = entry.HandleIncomingRequest()

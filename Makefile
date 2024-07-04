@@ -16,5 +16,8 @@ test_fixed_window:
 test_sliding_window_log:
 	k6 run ./algo/tests/test_sliding_window_log.js
 
+test_sliding_window_counter:
+	k6 run ./algo/tests/test_sliding_window_counter.js
+
 clean:
 	rm ./rl

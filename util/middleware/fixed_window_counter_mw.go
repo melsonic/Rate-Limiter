@@ -3,6 +3,7 @@ package middleware
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/melsonic/rate-limiter/algo"
 	"github.com/melsonic/rate-limiter/constants"
@@ -13,14 +14,14 @@ var FixedWindowCounterList map[string]*algo.FixedWindowEntry = make(map[string]*
 func FixedWindowCounterMiddlewareRL(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ClientIP := r.RemoteAddr
-    constants.Mut.RLock()
+		constants.Mut.RLock()
 		entry, entryPresent := FixedWindowCounterList[ClientIP]
-    constants.Mut.RUnlock()
+		constants.Mut.RUnlock()
 		if !entryPresent {
 			entry = &algo.FixedWindowEntry{CurrentRequestCount: 1}
-      constants.Mut.Lock()
+			constants.Mut.Lock()
 			FixedWindowCounterList[ClientIP] = entry
-      constants.Mut.Unlock()
+			constants.Mut.Unlock()
 		}
 		fmt.Printf("%s   ", ClientIP)
 		var allowRequest bool = entry.HandleIncomingRequest()
@@ -31,4 +32,23 @@ func FixedWindowCounterMiddlewareRL(next http.HandlerFunc) http.HandlerFunc {
 		}
 		next(w, r)
 	}
+}
+
+func FixedWindowCounterHelper() {
+	go func() {
+		ticker := time.NewTicker(time.Second)
+		for {
+			select {
+			case t := <-ticker.C:
+				if t == constants.FixedWindowCounter_EndTimeStamp {
+					constants.Mut.Lock()
+					for _, v := range FixedWindowCounterList {
+						v.Reset()
+					}
+					constants.Mut.Unlock()
+					constants.FixedWindowCounter_EndTimeStamp = constants.FixedWindowCounter_EndTimeStamp.Add(time.Second * constants.FixedWindowCounter_WindowSize)
+				}
+			}
+		}
+	}()
 }
