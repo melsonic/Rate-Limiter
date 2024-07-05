@@ -1,12 +1,12 @@
-### What is a Rate-Limiter 🤔
+## What is a Rate-Limiter 🤔
 
 Rate Limiter is a Decision engine in web applications that decides whether a client request should be fulfilled or rejected. A rate limiter tracks the request rate against each client and if that exceeds a certain threshold, it just rejects the upcoming requests from that particular client.
 
-### Advantages of using a Rate Limiter 🔥 
+## Advantages of using a Rate Limiter 🔥 
 - **Securing Applications**
     - It helps servers to survive brute force attacks. When an web application is under attack, it faces huge number of requests, hence in that situation if a rate limiter is available, it can control the request rate from such clients.
 
-### Rate Limiting Algorithms ⚒️
+## Rate Limiting Algorithms ⚒️
 There are different algorithms for this purpose, each having its own advantages. Here are the four algorithms that are implemented in this application.
 
 ### Token Bucket Algorithm 💡
@@ -43,7 +43,7 @@ There are different algorithms for this purpose, each having its own advantages.
 - To calculate the estimated request count for the current `Sliding Window`, it it's 37% through in the Current Window, it takes the 63% of the requests made in the Previous Window to make up for it.
 - Then it compares the value against a particular Threshold value and takes a decision whether to allow or discard the request.
 
-### Application Information 💻
+## Application Information 💻
 
 - Open a terminal(t1) & run either
   - `make run`
@@ -52,7 +52,7 @@ There are different algorithms for this purpose, each having its own advantages.
 - Select the algorithm (1, 2, 3 ...)
 - 👉 To **run the tests**, you need to install [k6](https://k6.io/docs/get-started/installation/)
 
-#### Test Token Bucket Algorithm 📝
+### Test Token Bucket Algorithm 📝
 
 - To test the scenerio open another terminal(t2) & run
   - `make test_token_bucket`
@@ -60,7 +60,7 @@ There are different algorithms for this purpose, each having its own advantages.
   - {Client ID} {Token Count} {Capacity} {Request Allowed/Disallowed}
 - Outputs are placed in the `result` folder
 
-#### Test Fixed Window Algorithm 📝
+### Test Fixed Window Algorithm 📝
 
 - To test the fixed window algorithm, open another terminal(t2) & run
   - `make test_fixed_window`
@@ -68,7 +68,7 @@ There are different algorithms for this purpose, each having its own advantages.
   - {Client ID} {CurrentWindowRequestCount} {Request Allowed/Disallowed}
 - Outputs are placed in the `result` folder
 
-#### Test Sliding Window Log Algorithm 📝
+### Test Sliding Window Log Algorithm 📝
 
 - To test the sliding window log algorithm, open another terminal(t2) & run
   - `make test_sliding_window_log`
@@ -77,7 +77,7 @@ There are different algorithms for this purpose, each having its own advantages.
     Allowed/Disallowed}
 - Outputs are placed in the `result` folder
 
-#### Test Sliding Window Counter Algorithm 📝
+### Test Sliding Window Counter Algorithm 📝
 
 - To test the sliding window log algorithm, open another terminal(t2) & run
   - `make test_sliding_window_counter`
