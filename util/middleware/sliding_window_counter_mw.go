@@ -3,6 +3,7 @@ package middleware
 import (
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/melsonic/rate-limiter/algo"
@@ -13,7 +14,10 @@ var SlidingWindowCounterEntryList map[string]*algo.SlidingWindowCounterEntry = m
 
 func SlidingWindowCounterMiddlewareRL(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var ClientIP string = r.RemoteAddr
+		ClientIP := strings.Split(r.Header.Get("X-FORWARDED-FOR"), ", ")[0]
+		if ClientIP == "" {
+			ClientIP = r.RemoteAddr
+		}
 		constants.Mut.RLock()
 		entry, entryPresent := SlidingWindowCounterEntryList[ClientIP]
 		constants.Mut.RUnlock()

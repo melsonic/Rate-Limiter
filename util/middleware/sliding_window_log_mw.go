@@ -3,6 +3,7 @@ package middleware
 import (
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/melsonic/rate-limiter/algo"
 	"github.com/melsonic/rate-limiter/constants"
@@ -12,7 +13,10 @@ var RequestTimeStamps map[string]*algo.SlidingWindowLog = make(map[string]*algo.
 
 func SlidingWindowLogMiddlewareRL(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		ClientIP := r.RemoteAddr
+		ClientIP := strings.Split(r.Header.Get("X-FORWARDED-FOR"), ", ")[0]
+		if ClientIP == "" {
+			ClientIP = r.RemoteAddr
+		}
 		constants.Mut.RLock()
 		entry, entryPresent := RequestTimeStamps[ClientIP]
 		constants.Mut.RUnlock()
